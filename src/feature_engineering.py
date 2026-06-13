@@ -86,11 +86,21 @@ def build_training_features():
     features["hybrid_score"] = 0.5 * features["keyword_score"] + 0.5 * features["vector_score"]
 
     # Sponsored ads simulation
-    features["sponsored_flag"] = (
-        features["business_id"].astype(str).str[-1].isin(["a", "b", "c", "d"])
-    ).astype(int)
+    # Sponsored ads simulation
+# Deterministically mark about 20% of businesses as sponsored.
+    sponsored_businesses = (
+        business[["business_id"]]
+        .sample(frac=0.2, random_state=42)["business_id"]
+        .tolist()
+    )
 
-    features["bid"] = features["sponsored_flag"].apply(lambda x: 1.5 if x == 1 else 0.0)
+    features["sponsored_flag"] = features["business_id"].isin(sponsored_businesses).astype(int)
+
+    # Simulated ad bid: sponsored businesses get different bid values
+    features["bid"] = 0.0
+    features.loc[features["sponsored_flag"] == 1, "bid"] = (
+        1.0 + (features.loc[features["sponsored_flag"] == 1, "review_count_log"] / features["review_count_log"].max())
+    )
 
     final_cols = [
         "user_id",
