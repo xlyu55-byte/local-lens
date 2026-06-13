@@ -10,3 +10,6 @@ data/processed/
 models/*.pkl
 *.csv
 *.json
+
+!reports/
+!reports/model_metrics.json

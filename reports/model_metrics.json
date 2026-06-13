@@ -1,0 +1,8 @@
+{
+    "ctr_logreg_auc": 0.8140744770293263,
+    "ctr_logreg_log_loss": 0.5304859557235646,
+    "ctr_random_forest_auc": 0.8962624562105895,
+    "ctr_random_forest_log_loss": 0.42045141780829837,
+    "cvr_random_forest_auc": 0.8426044823734966,
+    "cvr_random_forest_f1": 0.6587453874538746
+}
