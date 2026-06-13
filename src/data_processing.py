@@ -104,6 +104,47 @@ def clean_business_data():
     print("Cleaned business rows:", len(business))
     print("Saved to:", output_path)
 
+def clean_review_data(max_reviews=50000):
+    business_path = PROCESSED_DIR / "business_clean.csv"
+
+    review_path = Path("/Users/lvxinyi/Desktop/Yelp JSON/yelp_dataset/yelp_academic_dataset_review.json")
+
+    print("Loading cleaned business ids...")
+    business = pd.read_csv(business_path)
+    business_ids = set(business["business_id"])
+
+    rows = []
+
+    print("Sampling review data...")
+    with open(review_path, "r", encoding="utf-8") as f:
+        for line in f:
+            review = json.loads(line)
+
+            if review["business_id"] in business_ids:
+                rows.append({
+                    "review_id": review["review_id"],
+                    "user_id": review["user_id"],
+                    "business_id": review["business_id"],
+                    "stars": review["stars"],
+                    "text": review["text"],
+                    "date": review["date"],
+                    "useful": review["useful"],
+                    "funny": review["funny"],
+                    "cool": review["cool"],
+                })
+
+            if len(rows) >= max_reviews:
+                break
+
+    reviews = pd.DataFrame(rows)
+
+    output_path = PROCESSED_DIR / "reviews_clean.csv"
+    reviews.to_csv(output_path, index=False)
+
+    print("Cleaned review rows:", len(reviews))
+    print("Saved to:", output_path)
+
 
 if __name__ == "__main__":
     clean_business_data()
+    clean_review_data()
