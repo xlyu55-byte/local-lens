@@ -13,3 +13,4 @@ models/*.pkl
 
 !reports/
 !reports/model_metrics.json
+!reports/ab_testing_results.json

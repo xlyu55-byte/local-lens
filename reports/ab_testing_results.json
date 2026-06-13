@@ -1,0 +1,17 @@
+{
+    "rating_only_precision_at_10": 0.3,
+    "relevance_only_precision_at_10": 0.8,
+    "blended_precision_at_10": 1.0,
+    "rating_only_ndcg_at_10": 0.36211082347570717,
+    "relevance_only_ndcg_at_10": 0.8236998933965709,
+    "blended_ndcg_at_10": 1.0,
+    "baseline_ctr_top_1000": 0.503,
+    "blended_ctr_top_1000": 0.947,
+    "ctr_lift": 0.882703777335984,
+    "baseline_cvr_top_1000": 0.37,
+    "blended_cvr_top_1000": 0.732,
+    "cvr_lift": 0.9783783783783784,
+    "baseline_revenue_proxy": 0.31527656721451935,
+    "blended_revenue_proxy": 1.6850210683646436,
+    "revenue_proxy_lift": 4.34458073827646
+}
