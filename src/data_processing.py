@@ -144,7 +144,69 @@ def clean_review_data(max_reviews=50000):
     print("Cleaned review rows:", len(reviews))
     print("Saved to:", output_path)
 
+def create_interaction_labels(negative_ratio=1):
+    reviews_path = PROCESSED_DIR / "reviews_clean.csv"
+    business_path = PROCESSED_DIR / "business_clean.csv"
+
+    print("Creating interaction labels...")
+
+    reviews = pd.read_csv(reviews_path)
+    business = pd.read_csv(business_path)
+
+    # Positive samples: user actually reviewed this business
+    positive = reviews[["user_id", "business_id", "stars", "date"]].copy()
+    positive = positive.rename(columns={"stars": "rating"})
+    positive["clicked"] = 1
+    positive["converted"] = (positive["rating"] >= 4).astype(int)
+
+    # Negative samples: same users, random businesses they did not review
+    business_ids = business["business_id"].tolist()
+    interacted_pairs = set(zip(positive["user_id"], positive["business_id"]))
+
+    negative_rows = []
+    target_negative_count = len(positive) * negative_ratio
+
+    print("Sampling negative interactions...")
+
+    sampled_users = positive["user_id"].sample(
+        n=target_negative_count,
+        replace=True,
+        random_state=42
+    ).tolist()
+
+    sampled_businesses = pd.Series(business_ids).sample(
+        n=target_negative_count,
+        replace=True,
+        random_state=42
+    ).tolist()
+
+    for user_id, business_id in zip(sampled_users, sampled_businesses):
+        if (user_id, business_id) not in interacted_pairs:
+            negative_rows.append({
+                "user_id": user_id,
+                "business_id": business_id,
+                "rating": 0,
+                "date": None,
+                "clicked": 0,
+                "converted": 0,
+            })
+
+    negative = pd.DataFrame(negative_rows)
+
+    interactions = pd.concat([positive, negative], ignore_index=True)
+
+    output_path = PROCESSED_DIR / "interactions.csv"
+    interactions.to_csv(output_path, index=False)
+
+    print("Positive rows:", len(positive))
+    print("Negative rows:", len(negative))
+    print("Total interaction rows:", len(interactions))
+    print("Clicked rate:", interactions["clicked"].mean())
+    print("Converted rate:", interactions["converted"].mean())
+    print("Saved to:", output_path)
+
 
 if __name__ == "__main__":
     clean_business_data()
     clean_review_data()
+    create_interaction_labels()
