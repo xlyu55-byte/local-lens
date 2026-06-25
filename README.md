@@ -305,5 +305,3 @@ http://localhost:8501
 ## Notes
 
 The raw Yelp data and generated processed CSV files are excluded from GitHub because of file size limits. The repository includes source code, reports, metrics, and dashboard screenshots.
-
-This project is designed as a portfolio-ready data product project demonstrating search ranking, recommendation modeling, sponsored ads simulation, and product analytics evaluation.
